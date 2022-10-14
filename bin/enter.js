@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 const program = require('commander')
 const chalk = require('chalk')
+const Inquirer = require('inquirer')
 console.log(`hello ${chalk.blue('world')}`)
 console.log(chalk.blue.bgRed.bold('Hello world!'))
 console.log(
@@ -10,6 +11,32 @@ console.log(
       ' that becomes green again!'
   )
 )
+new Inquirer.prompt([
+  {
+    name: 'vue',
+    // 多选交互功能
+    // 单选将这里修改为 list 即可
+    type: 'checkbox',
+    message: 'Check the features needed for your project:',
+    choices: [
+      {
+        name: 'Babel',
+        checked: true,
+      },
+      {
+        name: 'TypeScript',
+      },
+      {
+        name: 'Progressive Web App (PWA) Support',
+      },
+      {
+        name: 'Router',
+      },
+    ],
+  },
+]).then((data) => {
+  console.log(data)
+})
 
 program.name('demo').usage(`<command> [option]`).version(`1.0.0`)
 
