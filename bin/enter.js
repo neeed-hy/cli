@@ -48,8 +48,8 @@ program
   .description('create a new project') // 添加描述信息
   .option('-f, --force', 'overwrite target directory if it exists') // 强制覆盖
   .action((projectName, cmd) => {
-    // 处理用户输入create 指令附加的参数
-    console.log(projectName, cmd)
+    // 引入 create 模块，并传入参数
+    require('../lib/create')(projectName, cmd)
   })
 
 program
