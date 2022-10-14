@@ -1,1 +1,7 @@
 node_modules
+
+# output
+lib/**/*.js
+bin/**/*.js
+lib/**/*.d.ts
+bin/**/*.d.ts
