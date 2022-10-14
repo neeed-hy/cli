@@ -1,47 +1,20 @@
 #! /usr/bin/env node
 import { Command } from 'commander'
 import * as chalk from 'chalk'
-import * as inquirer from 'inquirer'
+import { create } from '../lib/create'
 
 const program = new Command()
 
-console.log(`hello ${chalk.blue('world')}`)
-console.log(chalk.blue.bgRed.bold('Hello world!'))
-console.log(
-  chalk.green(
-    'I am a green line ' +
-      chalk.blue.underline.bold('with a blue substring') +
-      ' that becomes green again!'
-  )
-)
+// console.log(`hello ${chalk.blue('world')}`)
+// console.log(chalk.blue.bgRed.bold('Hello world!'))
+// console.log(
+//   chalk.green(
+//     'I am a green line ' +
+//       chalk.blue.underline.bold('with a blue substring') +
+//       ' that becomes green again!'
+//   )
+// )
 
-const prompt = inquirer.createPromptModule()
-prompt([
-  {
-    name: 'vue',
-    // 多选交互功能
-    // 单选将这里修改为 list 即可
-    type: 'checkbox',
-    message: 'Check the features needed for your project:',
-    choices: [
-      {
-        name: 'Babel',
-        checked: true,
-      },
-      {
-        name: 'TypeScript',
-      },
-      {
-        name: 'Progressive Web App (PWA) Support',
-      },
-      {
-        name: 'Router',
-      },
-    ],
-  },
-]).then((res) => {
-  console.log(res)
-})
 
 program
   .name('demo')
@@ -52,9 +25,8 @@ program
   .command('create <project-name>') // 增加创建指令
   .description('create a new project') // 添加描述信息
   .option('-f, --force', 'overwrite target directory if it exists') // 强制覆盖
-  .action((projectName, cmd) => {
-    // 引入 create 模块，并传入参数
-    require('../lib/create')(projectName, cmd)
+  .action(async (name: string, command: any) => {
+    await create(name, command)
   })
 
 program
