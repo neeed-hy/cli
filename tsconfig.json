@@ -10,6 +10,6 @@
     "useUnknownInCatchVariables": false,
     "types": ["node"]
   },
-  "include": ["bin", "lib"],
+  "include": ["bin", "lib", "actions", "commands"],
   "exclude": ["node_modules"]
 }

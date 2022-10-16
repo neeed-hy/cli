@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 import { Command } from 'commander'
 import * as chalk from 'chalk'
-import { create } from '../lib/create'
+import { create } from '../actions/create'
 
 const program = new Command()
 
