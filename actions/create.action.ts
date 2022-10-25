@@ -1,5 +1,7 @@
-import { mkdirSync, existsSync, removeSync } from 'fs-extra'
+import { existsSync, removeSync } from 'fs-extra'
 import * as inquirer from 'inquirer'
+import { downloadGit } from '../lib/gitDownload'
+
 interface IOption {
   force: boolean
 }
@@ -7,10 +9,10 @@ export async function create(projectName: string, options: IOption) {
   const pwd = process.cwd()
   const path = `${pwd}/${projectName}`
   if (!existsSync(path)) {
-    mkdirSync(path)
+    await download2(path)
   } else if (options.force) {
     removeSync(path)
-    mkdirSync(path)
+    await download2(path)
   } else {
     const prompt = inquirer.createPromptModule()
     const { isOverwrite } = await prompt<{ isOverwrite: boolean }>([
@@ -26,10 +28,15 @@ export async function create(projectName: string, options: IOption) {
     ])
     if (isOverwrite) {
       removeSync(path)
-      mkdirSync(path)
+      await download2(path)
     } else {
       console.log('取消建立！')
     }
   }
-  process.exit(1)
+}
+
+const download2 = async (path: string) => {
+  // 用来测试
+  const target = 'neeed-hy/rollup-template'
+  await downloadGit(target, path)
 }
