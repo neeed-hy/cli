@@ -6,8 +6,9 @@
   "scripts": {
     "build": "tsc",
     "clean": "node tools/clean.js",
-    "start": "node bin/enter.js",
     "lint:script": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./",
+    "prepare": "husky install",
+    "start": "node bin/enter.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
@@ -35,6 +36,14 @@
     "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,tsx,ts}": [
+      "npm run lint:script",
+      "git add ."
+    ]
   }
 }
