@@ -22,9 +22,9 @@ export async function create(projectName: string, options: IOption) {
         message: 'Check the features needed for your project:',
         choices: [
           { name: 'Overwrite', value: true },
-          { name: 'Cancel', value: false },
-        ],
-      },
+          { name: 'Cancel', value: false }
+        ]
+      }
     ])
     if (isOverwrite) {
       removeSync(path)

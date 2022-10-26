@@ -11,7 +11,7 @@ async function cleanOutput() {
     `${source}/**/*.js`,
     `${source}/**/*.d.ts`,
     `${source}/**/*.js.map`,
-    `${source}/**/*.d.ts.map`,
+    `${source}/**/*.d.ts.map`
   ])
   files.forEach(async (file) => {
     const temp = await globby(file)

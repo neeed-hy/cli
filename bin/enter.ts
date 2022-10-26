@@ -17,7 +17,7 @@ const bootstrap = () => {
 
   program
     .name('demo')
-    .usage(`<command> [option]`)
+    .usage('<command> [option]')
     .version(`yuhe ${require('../package.json').version}`)
 
   CommandLoader(program)
