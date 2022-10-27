@@ -25,12 +25,14 @@
     "globby": "11.1.0",
     "inquirer": "8.2.4",
     "ora": "5.4.1",
+    "shelljs": "^0.8.5",
     "typescript": "^4.8.4"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
     "@types/inquirer": "8.2.4",
     "@types/node": "^18.8.5",
+    "@types/shelljs": "^0.8.11",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "eslint": "^8.26.0",

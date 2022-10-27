@@ -1,6 +1,8 @@
 import * as inquirer from 'inquirer'
 import type { Question } from 'inquirer'
-import { generateCheckbox } from '../lib/question'
+import { generateMultiSelect, generateSingleSelect } from '../lib/question'
+import { exec } from 'shelljs'
+import { PackageManager, packageManagers } from '../lib/packageManager'
 
 enum ELintTools {
   eslint = 'eslint + prettier',
@@ -11,13 +13,15 @@ const lintTools = [ELintTools.eslint, ELintTools.husky]
 
 interface IAnswer {
   type: ELintTools[]
+  packageManager: PackageManager
 }
 
 export async function lintInit() {
   const prompt = inquirer.createPromptModule()
   const questions: Question[] = [
-    generateCheckbox('type', '请选择你要初始化的工具', lintTools)
+    generateSingleSelect('packageManager', '请选择包管理器', packageManagers),
+    generateMultiSelect('type', '请选择你要初始化的工具', lintTools)
   ]
   const answer = await prompt<IAnswer>(questions)
-  console.log(answer.type)
+  exec(`${answer.packageManager} -v`)
 }
