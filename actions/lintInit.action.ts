@@ -2,7 +2,11 @@ import * as inquirer from 'inquirer'
 import type { Question } from 'inquirer'
 import { generateMultiSelect, generateSingleSelect } from '../lib/question'
 import { exec } from 'shelljs'
-import { PackageManager, packageManagers } from '../lib/packageManager'
+import {
+  packageCommand,
+  PackageManager,
+  packageManagers
+} from '../lib/packageManager'
 
 enum ELintTools {
   eslint = 'eslint + prettier',
@@ -23,5 +27,7 @@ export async function lintInit() {
     generateMultiSelect('type', '请选择你要初始化的工具', lintTools)
   ]
   const answer = await prompt<IAnswer>(questions)
-  exec(`${answer.packageManager} -v`)
+  const { packageManager } = answer
+  const command = packageCommand(packageManager)
+  exec(command.version())
 }
