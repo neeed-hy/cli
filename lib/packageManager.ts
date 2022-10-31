@@ -12,9 +12,9 @@ export enum PackageManager {
  * 包管理器数组
  */
 export const packageManagers = [
+  PackageManager.pnpm,
   PackageManager.npm,
-  PackageManager.yarn,
-  PackageManager.pnpm
+  PackageManager.yarn
 ]
 
 /**
@@ -52,14 +52,26 @@ export interface PackageManagerCommands {
 }
 
 /**
+ * 将传入的要处理的包处理成字符串
+ * @param pkg
+ * @returns
+ */
+function getPkgString(pkg: string | string[]) {
+  return typeof pkg === 'string' ? pkg : pkg.join(' ')
+}
+
+/**
  * npm的命令
  */
 const npmCommand: PackageManagerCommands = {
   install: () => exec('npm install'),
-  add: (pkg: string | string[]) => exec(`npm install ${pkg} --save`),
-  addDev: (pkg: string | string[]) => exec(`npm install ${pkg} --save-dev`),
-  update: (pkg: string | string[]) => exec(`npm update ${pkg}`),
-  remove: (pkg: string | string[]) => exec(`npm uninstall ${pkg}`),
+  add: (pkg: string | string[]) =>
+    exec(`npm install ${getPkgString(pkg)} --save`),
+  addDev: (pkg: string | string[]) =>
+    exec(`npm install ${getPkgString(pkg)} --save-dev`),
+  update: (pkg: string | string[]) => exec(`npm update ${getPkgString(pkg)}`),
+  remove: (pkg: string | string[]) =>
+    exec(`npm uninstall ${getPkgString(pkg)}`),
   version: () => exec('npm -v'),
   exec: (command: string) => exec(command)
 }
@@ -69,10 +81,11 @@ const npmCommand: PackageManagerCommands = {
  */
 const yarnCommand: PackageManagerCommands = {
   install: () => exec('yarn'),
-  add: (pkg: string | string[]) => exec(`yarn add ${pkg}`),
-  addDev: (pkg: string | string[]) => exec(`yarn add ${pkg} --dev`),
-  update: (pkg: string | string[]) => exec(`yarn upgrade ${pkg}`),
-  remove: (pkg: string | string[]) => exec(`yarn remove ${pkg}`),
+  add: (pkg: string | string[]) => exec(`yarn add ${getPkgString(pkg)}`),
+  addDev: (pkg: string | string[]) =>
+    exec(`yarn add ${getPkgString(pkg)} --dev`),
+  update: (pkg: string | string[]) => exec(`yarn upgrade ${getPkgString(pkg)}`),
+  remove: (pkg: string | string[]) => exec(`yarn remove ${getPkgString(pkg)}`),
   version: () => exec('yarn --version'),
   exec: (command: string) => exec(command)
 }
@@ -81,10 +94,11 @@ const yarnCommand: PackageManagerCommands = {
  */
 const pnpmCommand: PackageManagerCommands = {
   install: () => exec('pnpm install'),
-  add: (pkg: string | string[]) => exec(`pnpm add ${pkg}`),
-  addDev: (pkg: string | string[]) => exec(`pnpm add ${pkg} --save-dev`),
-  update: (pkg: string | string[]) => exec(`pnpm update ${pkg}`),
-  remove: (pkg: string | string[]) => exec(`pnpm remove ${pkg}`),
+  add: (pkg: string | string[]) => exec(`pnpm add ${getPkgString(pkg)}`),
+  addDev: (pkg: string | string[]) =>
+    exec(`pnpm add ${getPkgString(pkg)} --save-dev`),
+  update: (pkg: string | string[]) => exec(`pnpm update ${getPkgString(pkg)}`),
+  remove: (pkg: string | string[]) => exec(`pnpm remove ${getPkgString(pkg)}`),
   version: () => exec('pnpm -v'),
   exec: (command: string) => exec(command)
 }
