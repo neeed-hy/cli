@@ -2,13 +2,14 @@ import * as inquirer from 'inquirer'
 import type { Question } from 'inquirer'
 import { generateSingleSelect } from '../lib/question'
 import * as chalk from 'chalk'
-import { outputFileSync, readJSONSync, writeJSONSync } from 'fs-extra'
+import { outputFileSync, writeJSONSync } from 'fs-extra'
 
 import {
   packageCommand,
   PackageManager,
   packageManagers
 } from '../lib/packageManager'
+import { readJsonFile, readPackageJson } from '../lib/file'
 
 enum ELintTools {
   eslint = 'eslint',
@@ -24,6 +25,7 @@ interface IAnswer {
 }
 
 export async function lintInit() {
+  readPackageJson()
   const prompt = inquirer.createPromptModule()
   const questions: Question[] = [
     generateSingleSelect('type', '请选择你要初始化的工具', lintTools),
@@ -71,16 +73,12 @@ function installEslint(thePackage: PackageManager) {
  */
 function installPrettier(thePackage: PackageManager) {
   const confFilePath = '.eslintrc.json'
-  let confFile: Record<string, any> = {}
-  try {
-    confFile = readJSONSync(confFilePath, 'utf8')
-  } catch (error) {
-    console.error(
-      `未找到 ${chalk.red('.eslintrc.json')} 文件，请首先安装并配置 eslint`
-    )
-    process.exit()
-  }
   const command = packageCommand(thePackage)
+  const packageJson = readPackageJson()
+  const confFile = readJsonFile(
+    confFilePath,
+    `未找到 ${chalk.red('.eslintrc.json')} 文件，请首先安装并配置 eslint`
+  )
   command.addDev([
     'prettier',
     'eslint-config-prettier',
@@ -98,7 +96,12 @@ function installPrettier(thePackage: PackageManager) {
   if (!confFile.rules['prettier/prettier']) {
     confFile.rules['prettier/prettier'] = 'error'
   }
+  if (!packageJson.scripts['lint:script']) {
+    packageJson.scripts['lint:script'] =
+      'eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./'
+  }
   writeJSONSync(confFilePath, confFile)
+  writeJSONSync('package.json', packageJson)
   console.log('---')
   console.log(`${chalk.green('prettier 安装成功!')}`)
 }
