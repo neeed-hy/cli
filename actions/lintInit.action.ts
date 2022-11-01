@@ -84,11 +84,20 @@ function installPrettier(thePackage: PackageManager) {
     'eslint-config-prettier',
     'eslint-plugin-prettier'
   ])
+  // 先转换成数组再操作
+  if (!confFile.extends || typeof confFile.extends === 'string') {
+    confFile.extends = confFile.extends ? [confFile.extends] : []
+  }
+  // 添加规则
   if (!confFile.extends.includes('prettier')) {
     confFile.extends.push('prettier')
   }
   if (!confFile.extends.includes('plugin:prettier/recommended')) {
     confFile.extends.push('plugin:prettier/recommended')
+  }
+  // 先转换成数组再操作
+  if (!confFile.plugins || typeof confFile.plugins === 'string') {
+    confFile.plugins = confFile.plugins ? [confFile.plugins] : []
   }
   if (!confFile.plugins.includes('prettier')) {
     confFile.plugins.push('prettier')
