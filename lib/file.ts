@@ -1,5 +1,6 @@
 import { readJSONSync } from 'fs-extra'
 import * as chalk from 'chalk'
+import { exec } from 'shelljs'
 
 /**
  * 检查文件目录下是否有package.json文件
@@ -38,5 +39,19 @@ export function readJsonFile(path: string, errorMsg: string) {
   } catch (error) {
     console.error(errorMsg)
     process.exit()
+  }
+}
+
+/**
+ * 检查当前文件夹是不是一个git仓库
+ * 是的话返回true，没有则报错然后直接结束进程
+ * @returns
+ */
+export function checkIsGit() {
+  try {
+    // 如果正常返回的话code=0,取个非正好是true
+    return !exec('git rev-parse --is-inside-work-tree').code
+  } catch (error) {
+    return false
   }
 }

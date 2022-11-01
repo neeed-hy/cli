@@ -9,7 +9,7 @@ import {
   PackageManager,
   packageManagers
 } from '../lib/packageManager'
-import { readJsonFile, readPackageJson } from '../lib/file'
+import { checkIsGit, readJsonFile, readPackageJson } from '../lib/file'
 
 enum ELintTools {
   eslint = 'eslint',
@@ -111,6 +111,25 @@ function installPrettier(thePackage: PackageManager) {
  * @param thePackage 包管理器
  */
 function addHusky(thePackage: PackageManager) {
-  const command = packageCommand(thePackage)
-  console.log(command.version())
+  if (checkIsGit()) {
+    const command = packageCommand(thePackage)
+    const packageJson = readPackageJson()
+    command.addDev(['husky', 'lint-staged'])
+    packageJson.scripts['prepare'] = 'husky install'
+    packageJson['lint-staged'] = {
+      '**/*.{js,jsx,tsx,ts}': ['npm run lint:script', 'git add .'],
+      '**/*.{scss}': ['npm run lint:style', 'git add .']
+    }
+    writeJSONSync('package.json', packageJson)
+    command.exec('npm run prepare')
+    command.exec('npx husky add .husky/pre-commit "npx --no -- lint-staged"')
+    console.log('---')
+    console.log(`${chalk.green('husky 安装成功!')}`)
+  } else {
+    console.error(
+      `当前文件夹并没有进行 git 初始化，请执行 ${chalk.red(
+        'git init'
+      )} 来初始化 git 仓库`
+    )
+  }
 }
