@@ -1,6 +1,6 @@
 import * as inquirer from 'inquirer'
 import type { Question } from 'inquirer'
-import { generateSingleSelect } from '../lib/question'
+import { generateMultiSelect, generateSingleSelect } from '../lib/question'
 import * as chalk from 'chalk'
 import { outputFileSync, writeJSONSync } from 'fs-extra'
 
@@ -15,10 +15,18 @@ import { confFileTemplate } from '../lib/template'
 enum ELintTools {
   eslint = 'eslint',
   prettier = 'prettier',
+  stylelint = 'stylelint',
   husky = 'husky'
 }
 
-const lintTools = [ELintTools.eslint, ELintTools.prettier, ELintTools.husky]
+const lintTools = [
+  ELintTools.eslint,
+  ELintTools.prettier,
+  ELintTools.stylelint,
+  ELintTools.husky
+]
+
+const cssExtension = ['scss', 'less']
 
 interface IAnswer {
   type: ELintTools
@@ -41,6 +49,9 @@ export async function lintInit() {
         break
       case ELintTools.prettier:
         installPrettier(packageManager)
+        break
+      case ELintTools.stylelint:
+        installStylelint(packageManager)
         break
       case ELintTools.husky:
         addHusky(packageManager)
@@ -143,4 +154,18 @@ function addHusky(thePackage: PackageManager) {
       )} 来初始化 git 仓库`
     )
   }
+}
+
+/**
+ * 安装Stylelint
+ * @param thePackage 包管理器
+ */
+async function installStylelint(thePackage: PackageManager) {
+  const command = packageCommand(thePackage)
+  const prompt = inquirer.createPromptModule()
+  const questions: Question[] = [
+    generateMultiSelect('extension', '请选择要使用的CSS预编译器', cssExtension)
+  ]
+  const answer = await prompt<{ extension: string[] }>(questions)
+  console.log(answer.extension)
 }
