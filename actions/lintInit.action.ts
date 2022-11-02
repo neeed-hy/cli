@@ -11,6 +11,7 @@ import {
 } from '../lib/packageManager'
 import { checkIsGit, readJsonFile, readPackageJson } from '../lib/file'
 import { confFileTemplate } from '../lib/template'
+import { packageList } from '../lib/constant'
 
 enum ELintTools {
   eslint = 'eslint',
@@ -70,7 +71,7 @@ export async function lintInit() {
  */
 function installEslint(thePackage: PackageManager) {
   const command = packageCommand(thePackage)
-  command.addDev('eslint')
+  command.addDev(packageList.esLint)
   outputFileSync('.eslintignore', '/node_modules')
   console.log('---')
   console.log('eslint 安装完毕,请执行:')
@@ -91,11 +92,7 @@ function installPrettier(thePackage: PackageManager) {
     confFilePath,
     `未找到 ${chalk.red('.eslintrc.json')} 文件，请首先安装并配置 eslint`
   )
-  command.addDev([
-    'prettier',
-    'eslint-config-prettier',
-    'eslint-plugin-prettier'
-  ])
+  command.addDev(packageList.prettier)
   // 先转换成数组再操作
   if (!confFile.extends || typeof confFile.extends === 'string') {
     confFile.extends = confFile.extends ? [confFile.extends] : []
@@ -136,7 +133,7 @@ function addHusky(thePackage: PackageManager) {
   if (checkIsGit()) {
     const command = packageCommand(thePackage)
     const packageJson = readPackageJson()
-    command.addDev(['husky', 'lint-staged'])
+    command.addDev(packageList.husky)
     packageJson.scripts['prepare'] = 'husky install'
     packageJson['lint-staged'] = {
       '**/*.{js,jsx,ts,tsx}': ['npm run lint:script', 'git add .'],
@@ -168,4 +165,5 @@ async function installStylelint(thePackage: PackageManager) {
   ]
   const answer = await prompt<{ extension: string[] }>(questions)
   console.log(answer.extension)
+  console.log(packageList.stylelint)
 }
