@@ -1,6 +1,6 @@
 import * as inquirer from 'inquirer'
 import type { Question } from 'inquirer'
-import { generateMultiSelect, generateSingleSelect } from '../lib/question'
+import { generateSingleSelect } from '../lib/question'
 import * as chalk from 'chalk'
 import { outputFileSync, writeJSONSync } from 'fs-extra'
 
@@ -20,6 +20,12 @@ enum ELintTools {
   husky = 'husky'
 }
 
+enum ECssExtension {
+  none = 'none',
+  scss = 'scss',
+  less = 'less'
+}
+
 const lintTools = [
   ELintTools.eslint,
   ELintTools.prettier,
@@ -27,7 +33,11 @@ const lintTools = [
   ELintTools.husky
 ]
 
-const cssExtension = ['scss', 'less']
+const cssExtension = [
+  ECssExtension.none,
+  ECssExtension.less,
+  ECssExtension.scss
+]
 
 interface IAnswer {
   type: ELintTools
@@ -161,9 +171,24 @@ async function installStylelint(thePackage: PackageManager) {
   const command = packageCommand(thePackage)
   const prompt = inquirer.createPromptModule()
   const questions: Question[] = [
-    generateMultiSelect('extension', '请选择要使用的CSS预编译器', cssExtension)
+    generateSingleSelect('extension', '请选择要使用的CSS预编译器', cssExtension)
   ]
-  const answer = await prompt<{ extension: string[] }>(questions)
+  const answer = await prompt<{ extension: ECssExtension }>(questions)
+  let pkgList: string[] = []
+  switch (answer.extension) {
+    case ECssExtension.less:
+      pkgList = packageList.stylelint
+      break
+    case ECssExtension.scss:
+      pkgList = packageList.stylelint
+      break
+    case ECssExtension.none:
+      pkgList = packageList.stylelint
+      break
+    default:
+      pkgList = packageList.stylelint
+      break
+  }
   console.log(answer.extension)
-  console.log(packageList.stylelint)
+  console.log(pkgList)
 }
