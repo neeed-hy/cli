@@ -10,6 +10,7 @@ import {
   packageManagers
 } from '../lib/packageManager'
 import { checkIsGit, readJsonFile, readPackageJson } from '../lib/file'
+import { confFileTemplate } from '../lib/template'
 
 enum ELintTools {
   eslint = 'eslint',
@@ -111,6 +112,7 @@ function installPrettier(thePackage: PackageManager) {
   }
   writeJSONSync(confFilePath, confFile)
   writeJSONSync('package.json', packageJson)
+  writeJSONSync('.prettierrc.json', confFileTemplate.prettier)
   console.log('---')
   console.log(`${chalk.green('prettier 安装成功!')}`)
 }
@@ -126,8 +128,8 @@ function addHusky(thePackage: PackageManager) {
     command.addDev(['husky', 'lint-staged'])
     packageJson.scripts['prepare'] = 'husky install'
     packageJson['lint-staged'] = {
-      '**/*.{js,jsx,tsx,ts}': ['npm run lint:script', 'git add .'],
-      '**/*.{scss}': ['npm run lint:style', 'git add .']
+      '**/*.{js,jsx,ts,tsx}': ['npm run lint:script', 'git add .'],
+      '**/*.{css,less,scss}': ['npm run lint:style', 'git add .']
     }
     writeJSONSync('package.json', packageJson)
     command.exec('npm run prepare')
